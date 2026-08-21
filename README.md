@@ -89,12 +89,6 @@ The `AudioDetail` class is responsible for converting Telegram audio messages in
 
 The generated filename follows a predictable structure based on the internal ID, channel, title, performer, and date.
 
-For example:
-
-```text
-123_saidawan_song-name_artist_20260821-1200.opus
-```
-
 This gives every audio file a stable identity that can be used by the rest of the system.
 
 ---
@@ -158,13 +152,9 @@ It can be manually triggered and is also scheduled to run every two days.
 
 The workflow:
 
-1. Checks out the repository.
-2. Installs Python.
-3. Installs the Python dependencies.
-4. Connects to Telegram using GitHub Secrets.
-5. Fetches audio metadata.
-6. Writes the updated JSON.
-7. Commits and pushes the changes back to the repository.
+1. Fetches audio metadata.
+2. Writes the updated JSON.
+3. Commits and pushes the changes back to the repository.
 
 This makes `audio-data/data.json` the continuously updated **source of truth for the music catalog**.
 
@@ -199,7 +189,7 @@ This repository therefore acts as a **metadata/source aggregation layer** separa
 
 # 4. The `pocketXX` Repositories
 
-The organization contains six storage repositories:
+The organization contains six storage repositories and can be add more pocket repo if needed:
 
 * [`pocket01`](https://github.com/saidawan-radio/pocket01)
 * [`pocket02`](https://github.com/saidawan-radio/pocket02)
@@ -275,17 +265,6 @@ The downloader retrieves the corresponding Telegram message and downloads its au
 
 After downloading an audio file, the pocket system generates its GitHub Raw URL.
 
-For example, conceptually:
-
-```text
-https://raw.githubusercontent.com/
-    saidawan-radio/
-    pocket01/
-    master/
-    musics/
-    <audio-file>.opus
-```
-
 The downloader adds this URL to the audio metadata as `github_url`.
 
 This is an important part of the architecture.
@@ -302,7 +281,7 @@ Web Browser
 GitHub Raw
      │
      ▼
-.pus audio file
+.opus audio file
 ```
 
 GitHub becomes the static file delivery layer.
@@ -313,14 +292,7 @@ GitHub becomes the static file delivery layer.
 
 The pocket repositories also contain an audio conversion stage.
 
-The GitHub Actions workflow installs:
-
-* FFmpeg
-* `opustags`
-
-and then runs `converter.sh`.
-
-The purpose of this stage is to process the downloaded audio into the format used by the radio system, particularly Opus audio.
+The purpose of this stage is to process the downloaded audio into the specific and optimize format, particularly Opus format.
 
 The final audio files are stored in the pocket's `musics/` directory.
 
@@ -332,29 +304,7 @@ The pocket repositories also maintain album/track covers.
 
 The `extract-cover.yml` workflow watches for Opus files and extracts their embedded cover images.
 
-The workflow:
-
-1. Detects Opus audio files.
-2. Uses `opustags`.
-3. Extracts the embedded cover.
-4. Creates a JPG file.
-5. Stores it in the `covers/` directory.
-
 The cover filename is associated with the numeric audio ID extracted from the audio filename.
-
-Conceptually:
-
-```text
-musics/
-└── 123_saidawan_song_artist_....opus
-
-              │
-              │ extract embedded cover
-              ▼
-
-covers/
-└── 123.jpg
-```
 
 This allows the web application to associate an image with each track.
 
@@ -407,19 +357,6 @@ It is deployed as a static GitHub Pages website:
 
 [`saidawan-radio.github.io`](https://saidawan-radio.github.io)
 
-The repository contains a compiled frontend application with:
-
-```text
-index.html
-assets/
-favicon.ico
-icons.svg
-404.html
-CNAME
-```
-
-The entry point loads a bundled JavaScript application and CSS from the `assets/` directory.
-
 The organization therefore does not need a conventional backend server to host the public player.
 
 ---
@@ -445,24 +382,6 @@ Play audio from GitHub
 The frontend is a React-based application and uses Material UI components in its compiled bundle.
 
 The actual audio files remain in the `pocketXX` repositories rather than inside the website repository.
-
-This separation is important:
-
-```text
-Frontend
-   │
-   ├── UI
-   ├── Player
-   ├── Playlist
-   └── Metadata consumption
-          │
-          ▼
-     GitHub repositories
-          │
-          ├── metadata
-          ├── covers
-          └── audio
-```
 
 ---
 
