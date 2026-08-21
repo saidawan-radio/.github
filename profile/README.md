@@ -103,14 +103,6 @@ Repository:
 
 It does not primarily store the music files. Instead, it maintains the structured information describing the music available from Telegram.
 
-The metadata is stored in JSON using structures such as:
-
-```text
-audio_info
-map_msg_id
-general_info
-```
-
 ### Fetching metadata
 
 `fetch_and_write_detail.py` creates a Telegram client using Telethon and fetches audio messages from the configured channel.
@@ -122,9 +114,7 @@ Telegram
    │
    ├── Find audio messages
    │
-   ├── Extract AudioDetail
-   │
-   ├── Assign internal ID
+   ├── Extract Audio Detail
    │
    ├── Detect updated messages
    │
@@ -157,15 +147,7 @@ Repository:
 
 `audio-source` is used to collect and combine audio metadata from external source files.
 
-It contains:
-
-* `colector.py`
-* `fetch_source.sh`
-* `source.json`
-* `sources-url`
-* `file-sources/`
-
-The `fetch_source.sh` script reads URLs from `sources-url`, downloads each JSON source into `file-sources/`, and then runs the collector.
+Reads URLs from `sources-url`, downloads each JSON source into `file-sources/`, and then runs the collector.
 
 The collector merges the audio information from those source files into `source.json` and calculates aggregate information such as:
 
@@ -357,17 +339,14 @@ The entire organization can be understood as one pipeline:
 ┌───────────────────────────┐
 │      Telegram Channel     │
 │                           │
-│  New audio message        │
+│     New audio message     │
 └─────────────┬─────────────┘
               │
               │ Telethon
               ▼
 ┌───────────────────────────┐
 │        audio-data         │
-│                           │
-│  AudioDetail              │
-│  FetchDetail              │
-│  data.json                │
+│  fetch metadata of audios │
 └─────────────┬─────────────┘
               │
               │ JSON metadata
@@ -377,13 +356,9 @@ The entire organization can be understood as one pipeline:
 │                                            │
 │  Download Telegram audio                   │
 │          ↓                                 │
-│  Convert / tag audio                       │
+│  Convert and store                         │                     
 │          ↓                                 │
-│  Store in musics/                          │
-│          ↓                                 │
-│  Extract cover                             │
-│          ↓                                 │
-│  Store in covers/                          │
+│  Extract cover and store it                │                 
 │          ↓                                 │
 │  Generate GitHub Raw URL                   │
 └───────────────────┬────────────────────────┘
@@ -407,12 +382,7 @@ The entire organization can be understood as one pipeline:
 | -------------------------- | ------------------------------------------------------------- |
 | `audio-data`               | Collects and maintains canonical audio metadata from Telegram |
 | `audio-source`             | Aggregates metadata from external JSON sources                |
-| `pocket01`                 | Music storage + download/processing pipeline                  |
-| `pocket02`                 | Music storage + download/processing pipeline                  |
-| `pocket03`                 | Music storage + download/processing pipeline                  |
-| `pocket04`                 | Music storage + download/processing pipeline                  |
-| `pocket05`                 | Music storage + download/processing pipeline                  |
-| `pocket06`                 | Music storage + download/processing pipeline                  |
+| `pocketXX`                 | Music storage + download/processing pipeline                  |
 | `saidawan-radio.github.io` | Static web radio and music player                             |
 
 The organization currently exposes all nine repositories publicly.
