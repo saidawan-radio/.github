@@ -28,7 +28,7 @@ There is no traditional backend server or database required for the public playe
                        │ → JSON database     │
                        └──────────┬──────────┘
                                   │
-                           data.json
+                              data.json
                                   │
               ┌───────────────────┼───────────────────┐
               │                   │                   │
@@ -103,15 +103,6 @@ Repository:
 
 It does not primarily store the music files. Instead, it maintains the structured information describing the music available from Telegram.
 
-Its main components include:
-
-* `AudioDetail.py`
-* `FetchDetail.py`
-* `fetch_and_write_detail.py`
-* `config.py`
-* `data.json`
-* GitHub Actions workflow
-
 The metadata is stored in JSON using structures such as:
 
 ```text
@@ -119,8 +110,6 @@ audio_info
 map_msg_id
 general_info
 ```
-
-`map_msg_id` maps Telegram message IDs to the internal IDs used by the system, while `audio_info` contains the actual audio metadata.
 
 ### Fetching metadata
 
@@ -218,11 +207,11 @@ Conceptually:
           ┌────────────────┼────────────────┐
           │                │                │
        pocket01         pocket02         pocket03
-          │                │                │
-       pocket04         pocket05         pocket06
 ```
 
 This distributes the storage and Git history across several repositories.
+
+Set limit of each pocket repo to 400MB (by default)
 
 The individual pocket repositories are therefore primarily **storage buckets for the actual audio files**.
 
@@ -235,27 +224,6 @@ A pocket repository receives the canonical metadata from `audio-data`.
 For example, the `pocket01` workflow downloads `data.json` from the configured `audio-data` URL before starting the download process.
 
 The workflow then runs the audio downloader with the Telegram credentials and configuration.
-
-The downloader determines which internal audio ID should be downloaded next:
-
-```text
-audio-data/data.json
-          │
-          ▼
-last downloaded ID
-          │
-          ▼
-next audio item
-          │
-          ▼
-Telegram message
-          │
-          ▼
-download audio
-          │
-          ▼
-pocketXX/musics/
-```
 
 The downloader retrieves the corresponding Telegram message and downloads its audio media.
 
@@ -301,10 +269,6 @@ The final audio files are stored in the pocket's `musics/` directory.
 # 8. Cover Images
 
 The pocket repositories also maintain album/track covers.
-
-The `extract-cover.yml` workflow watches for Opus files and extracts their embedded cover images.
-
-The cover filename is associated with the numeric audio ID extracted from the audio filename.
 
 This allows the web application to associate an image with each track.
 
@@ -391,7 +355,7 @@ The entire organization can be understood as one pipeline:
 
 ```text
 ┌───────────────────────────┐
-│       Telegram Channel    │
+│      Telegram Channel     │
 │                           │
 │  New audio message        │
 └─────────────┬─────────────┘
@@ -409,7 +373,7 @@ The entire organization can be understood as one pipeline:
               │ JSON metadata
               ▼
 ┌────────────────────────────────────────────┐
-│              pocketXX                     │
+│              pocketXX                      │
 │                                            │
 │  Download Telegram audio                   │
 │          ↓                                 │
@@ -427,7 +391,7 @@ The entire organization can be understood as one pipeline:
                     │ HTTPS
                     ▼
 ┌────────────────────────────────────────────┐
-│        saidawan-radio.github.io             │
+│        saidawan-radio.github.io            │
 │                                            │
 │            Static Web Radio                │
 │                                            │
