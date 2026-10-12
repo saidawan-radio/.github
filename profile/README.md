@@ -1,6 +1,18 @@
 # Saidawan Radio
 
-[radio.2mohsen.ir](https://radio.2mohsen.ir/)
+![saidawan radio image](radio_background.png)
+
+<p align="center">
+  <a href="https://saidawan-radio.github.io/">
+    <strong>🎵 Listen to Saidawan Radio</strong>
+  </a>
+  </br>
+  <a href="https://saidawan-radio.github.io/">
+    radio.2mohsen.ir
+  </a>
+</p>
+
+---
 
 **Saidawan Radio** is a distributed, GitHub-based music streaming system that collects audio from a Telegram channel, extracts and maintains metadata, stores the audio files across multiple GitHub repositories, and serves them through a static web radio application.
 
